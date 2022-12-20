@@ -14,7 +14,7 @@ import com.diyorbek.sqlitedatabaset1.databinding.ItemLayoutBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var movieDatabase: MovieDatabase
-    private val itemLaot by lazy {ItemLayoutBinding.inflate(layoutInflater)}
+    private val itemLaot by lazy { ItemLayoutBinding.inflate(layoutInflater) }
     private val movieAdapter by lazy { MovieAdapter() }
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,11 +25,20 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+
         binding.rv.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = movieAdapter
         }
         movieAdapter.submitList(movieDatabase.getAllContactMovie())
+
+        movieAdapter.onBtnClick = {
+            val bundle = bundleOf("film" to it)
+            val intent = Intent(this,EditActivity::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
+        }
 
         movieAdapter.onClick = {
             val bundle = bundleOf("movie" to it)
@@ -40,11 +49,13 @@ class MainActivity : AppCompatActivity() {
         binding.addNewMovie.setOnClickListener {
             startActivity(Intent(this, EditMovieActivity::class.java))
         }
-
+        movieAdapter.notifyDataSetChanged()
+        movieAdapter.refreshDataset()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.my_menu, menu)
         return true
     }
+
 }
